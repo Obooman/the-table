@@ -1,11 +1,4 @@
-const getDecimalTimes = (number) => {
-  const numberString = number.toString();
-  if (!/\./.test(numberString)) {
-    return 0;
-  }
-
-  return numberString.length - numberString.indexOf(".") - 1;
-};
+import getDecimalTimes from "../getDecimalTimes";
 
 export default function SUM(...numbers) {
   let index = 0;

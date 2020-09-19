@@ -1,28 +1,36 @@
 import * as acorn from "acorn";
+import getDecimalTimes from "./getDecimalTimes";
 
 const types = {
   ExpressionStatement: true,
   BinaryExpression: true,
+  UnaryExpression: true,
   CallExpression: true,
   Literal: true,
 };
 
-const insetFunctions = {
-  sum(...numbers) {
-    let index = 0;
-    let sum = 0;
-    while (index < numbers.length) {
-      sum += numbers[index];
-      index++;
-    }
-    return sum;
-  },
-  avg(...numbers) {
-    if (numbers.length === 0) {
-      return 0;
-    }
-    return insetFunctions.sum(...numbers) / numbers.length;
-  },
+const operators = {
+  addition: "addition",
+  subtraction: "subtraction",
+  multiplication: "multiplication",
+};
+
+const getArithmeticResult = (a, b, operator) => {
+  const timeValue = Math.pow(
+    10,
+    Math.max(getDecimalTimes(a), getDecimalTimes(b))
+  );
+
+  switch (operator) {
+    case operators.addition:
+      return (a * timeValue + b * timeValue) / timeValue;
+    case operators.subtraction:
+      return (a * timeValue - b * timeValue) / timeValue;
+    case operators.multiplication:
+      return (a * timeValue * b * timeValue) / timeValue / timeValue;
+    default:
+      throw new Error("Invalid arithmetic operator");
+  }
 };
 
 export default function calculate(
@@ -46,6 +54,7 @@ export default function calculate(
   }
 
   function getValue(block) {
+    console.log(block);
     if (error) {
       return;
     }
@@ -55,18 +64,44 @@ export default function calculate(
     }
 
     if (block.type === "Literal") {
+      if (!/\d+/.test(block.value)) {
+        throw new Error("invalid literal value");
+      }
+
       return block.value;
+    }
+
+    if (block.type === "UnaryExpression") {
+      if (!/\+|-/.test(block.operator)) {
+        throw new Error("Invalid Unary Expression");
+      }
+
+      return block.operator === "+"
+        ? getValue(block.argument)
+        : -getValue(block.argument);
     }
 
     if (block.type === "BinaryExpression") {
       let rightHandNumber = getValue(block.right);
       switch (block.operator) {
         case "+":
-          return getValue(block.left) + getValue(block.right);
+          return getArithmeticResult(
+            getValue(block.left),
+            getValue(block.right),
+            operators.addition
+          );
         case "-":
-          return getValue(block.left) - getValue(block.right);
+          return getArithmeticResult(
+            getValue(block.left),
+            getValue(block.right),
+            operators.subtraction
+          );
         case "*":
-          return getValue(block.left) * getValue(block.right);
+          return getArithmeticResult(
+            getValue(block.left),
+            getValue(block.right),
+            operators.multiplication
+          );
         case "/":
           if (rightHandNumber === 0) {
             throw new Error("Got 0 as division");
@@ -99,9 +134,9 @@ export default function calculate(
     if (block.type === "Identifier") {
       if (isVariable(block.name)) {
         return getVariableValue(block.name);
-      } else {
-        throw new Error("using undefined variable");
       }
+
+      throw new Error("using undefined variable");
     }
   }
 }
