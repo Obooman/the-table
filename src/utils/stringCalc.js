@@ -7,6 +7,7 @@ const types = {
   UnaryExpression: true,
   CallExpression: true,
   Literal: true,
+  Identifier: true,
 };
 
 const operators = {
@@ -38,29 +39,20 @@ export default function calculate(
   { isVariable, getVariableValue },
   { isFunction, getFunction }
 ) {
-  let error = false;
-
   try {
-    return [
-      error,
-      getValue(
-        acorn.parse(parseString, {
-          ecmaVersion: 2020,
-        }).body[0].expression
-      ),
-    ];
+    const value = getValue(
+      acorn.parse(parseString, {
+        ecmaVersion: 2020,
+      }).body[0].expression
+    );
+    return [false, value];
   } catch (syntaxError) {
-    return [true, 0];
+    return [syntaxError, 0];
   }
 
   function getValue(block) {
-    console.log(block);
-    if (error) {
-      return;
-    }
-
     if (!types[block.type]) {
-      error = true;
+      throw new Error("Unsupported syntax block" + block.type);
     }
 
     if (block.type === "Literal") {

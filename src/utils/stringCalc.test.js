@@ -15,7 +15,18 @@ const calc = (str, getVariableValue) =>
     }
   );
 
-describe("number operations", () => {
+const variables = {
+  A11: 11,
+  A12: 22,
+  A13: 0.3,
+  ZZZ9999999: 0.1,
+};
+
+const getVariableValue = (variableName) => {
+  return variables[variableName] || 0;
+};
+
+describe("Number operations", () => {
   it("should get the right result with simple operations", () => {
     expect(calc("1+1")[1]).toBe(2);
     expect(calc("1-1")[1]).toBe(0);
@@ -64,7 +75,7 @@ describe("number operations", () => {
   });
 });
 
-describe("function calling", () => {
+describe("Function calling", () => {
   it("should get sum result successfully", () => {
     expect(calc("SUM(1)")[1]).toBe(1);
     expect(calc("SUM(0)")[1]).toBe(0);
@@ -102,22 +113,37 @@ describe("function calling", () => {
   });
 });
 
-describe("variables", () => {
-  const variables = {
-    A11: 11,
-    A12: 22,
-    A13: 0.3,
-    ZZZ999999999: 0.1,
-  };
-
-  const getVariableValue = (variableName) => {
-    return variables[variableName];
-  };
-
+describe("Variables", () => {
   it("should get result successfully", () => {
     expect(calc("A11", getVariableValue)[1]).toBe(variables.A11);
     expect(calc("A12", getVariableValue)[1]).toBe(variables.A12);
+    expect(calc("A12+A11", getVariableValue)[1]).toBe(33);
+    expect(calc("SUM(A12,A11)", getVariableValue)[1]).toBe(33);
+    expect(calc("AVG(A12,A11,0)", getVariableValue)[1]).toBe(11);
+    expect(calc("AVG(A12,A11,0)+ZZZ9999999", getVariableValue)[1]).toBe(11.1);
+    expect(calc("AVG(A12,A11,0)+ZZZ99990999", getVariableValue)[1]).toBe(11);
+    expect(calc("SUM(A11,A12,A13,A14)", getVariableValue)[1]).toBe(33.3);
   });
 });
 
-// describe("invalid expression");
+describe("Invalid expression", () => {
+  it("should have syntax error with unsupported expression", () => {
+    expect(calc("true")[0]).toBeTruthy();
+    expect(calc("-true")[0]).toBeTruthy();
+    expect(calc("!12-1")[0]).toBeTruthy();
+    expect(calc("~12")[0]).toBeTruthy();
+    expect(calc("2^2")[0]).toBeTruthy();
+    expect(calc("2>2")[0]).toBeTruthy();
+    expect(calc("2<2")[0]).toBeTruthy();
+    expect(calc("2>>2")[0]).toBeTruthy();
+    expect(calc("2<<2")[0]).toBeTruthy();
+  });
+});
+
+describe("Complicated expressions", () => {
+  it("should works as expected", () => {
+    expect(
+      calc("AVG(SUM(A11,A12),11)/2+2*(SUM(0.2-0.1,0.3))", getVariableValue)[1]
+    ).toBe(11.8);
+  });
+});
