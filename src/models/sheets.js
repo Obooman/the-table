@@ -1,17 +1,27 @@
-const A12 = {
+const row11 = {
   row: 11,
-  col: "A",
+};
+const row12 = {
+  row: 12,
+};
+const col1 = {
+  col: 1,
+};
+
+const A12 = {
+  row: row12,
+  col: col1,
   value: 25,
-  refBy: [],
+  refedBy: [],
   isExpression: true,
   expression: "A11*2+1",
 };
 
 const A11 = {
-  row: 11,
-  col: "A",
+  row: row11,
+  col: col1,
   value: 12,
-  refBy: [A12],
+  refedBy: [A12],
   isExpression: true,
   expression: "1+4*2+SUM(1,2)",
 };

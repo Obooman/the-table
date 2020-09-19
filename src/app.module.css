@@ -1,0 +1,51 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  border: 1px solid #adadad;
+  display: flex;
+  flex-direction: column;
+}
+
+.tableApplication {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.rowsTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.cornerBlock {
+  height: 20px;
+  background-color: #edebe9;
+  border-right: 1px solid #d4d4d4;
+  border-bottom: 1px solid #d4d4d4;
+  box-sizing: border-box;
+}
+
+.dataContent {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.columnHeader {
+}
+
+.contentTable {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

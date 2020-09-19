@@ -1,14 +1,7 @@
 export default {
   state: {
     mode: "",
-    selection: {
-      visible: false,
-      row: "A",
-      column: 0,
-      content: "",
-    },
+    selectedValue: {},
   },
-  effects: (dispatch) => ({
-    submit(state, payload) {},
-  }),
+  effects: (dispatch) => ({}),
 };

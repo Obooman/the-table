@@ -18,7 +18,10 @@ $ yarn start # will open in :3000
 - [x] Editing Cell component
 - [ ] Sorter design
 - [ ] model data rendering
-- [ ] Infinite Grid component
-- [ ] Sync View component
+- [x] Infinite Grid component
 - [ ] Compose application
 - [ ] Deploy for github pages
+
+## Known issues
+
+- [ ] InfiniteGrid end panel issue
