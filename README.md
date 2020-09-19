@@ -13,9 +13,9 @@ $ yarn start # will open in :3000
 ## Todo List
 
 - [x] Test cases for calculation functions
-- [ ] Test cases for stringCalc
+- [x] Test cases for stringCalc
 - [ ] model update logic
-- [ ] Editing Cell component
+- [x] Editing Cell component
 - [ ] Sorter design
 - [ ] model data rendering
 - [ ] Infinite Grid component

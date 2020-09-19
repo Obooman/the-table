@@ -33,6 +33,19 @@ export default {
       },
     },
   },
-  reducers: {},
+  reducers: {
+    updateValue(state, payload) {
+      return {
+        ...state,
+        rows: {
+          ...state.rows,
+          [payload.row]: {
+            ...state.rows[payload.row],
+            [payload.column]: payload.value,
+          },
+        },
+      };
+    },
+  },
   effects: {},
 };
