@@ -8,14 +8,13 @@ import { connect } from "react-redux";
 
 const cellWidth = 59;
 
-export const EditingCell = ({ onBlur, sheets, row, col }) => {
+export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
   const rowData = sheets.rows[row] || {};
   const cell = rowData[col] || {
     expression: "",
     value: "",
   };
 
-  const [value, setValue] = useState("");
   const [width, setWidth] = useState(
     parseInt(getTextLength(cell.expression) / cellWidth) + 1
   );
@@ -26,10 +25,18 @@ export const EditingCell = ({ onBlur, sheets, row, col }) => {
     if (getTextLength(data) > width * cellWidth) {
       setWidth(width + 1);
     }
+  };
 
-    if (/^=/.test(data)) {
-      const [error, result] = stringCalc(
-        data.slice(1),
+  const onUpdateHandler = (ev) => {
+    const data = ev.target.value;
+    const isExpression = /^=/.test(data);
+    let result;
+    let expression;
+
+    if (isExpression) {
+      expression = data.slice(1);
+      const [error, calculateResult] = stringCalc(
+        expression,
         {
           isVariable,
           getVariableValue,
@@ -41,13 +48,28 @@ export const EditingCell = ({ onBlur, sheets, row, col }) => {
       );
 
       if (!error) {
-        setValue(result);
+        result = calculateResult;
       } else {
-        setValue("#ERROR");
+        result = "#ERROR";
       }
     } else {
-      setValue(data);
+      result = data;
     }
+
+    dispatch.sheets.updateValue({
+      row,
+      column: col,
+      isExpression,
+      value: result,
+      expression: expression,
+    });
+
+    onBlur && onBlur(ev);
+  };
+
+  const onBlurHandler = (ev) => {
+    onUpdateHandler(ev);
+    onBlur && onBlur(ev);
   };
 
   return (
@@ -57,25 +79,24 @@ export const EditingCell = ({ onBlur, sheets, row, col }) => {
         style={{
           width: width * cellWidth,
         }}
+        onChange={onChangeHandler}
         onClick={(ev) => {
           ev.stopPropagation();
         }}
       >
         <input
-          defaultValue={cell.expression}
+          defaultValue={cell.isExpression ? `=${cell.expression}` : cell.value}
           autoFocus
           type="text"
-          onChange={onChangeHandler}
           className={styles.editingBorderTextContent}
-          onBlur={onBlur}
+          onBlur={onBlurHandler}
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
-              console.log("updateValue");
+              onUpdateHandler(ev);
             }
           }}
         />
       </div>
-      {value}
     </div>
   );
 };

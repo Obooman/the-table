@@ -39,7 +39,7 @@ export default {
           ...state.rows,
           [payload.row]: {
             ...state.rows[payload.row],
-            [payload.column]: payload.value,
+            [payload.column]: payload,
           },
         },
       };

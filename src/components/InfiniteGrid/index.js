@@ -16,61 +16,38 @@ export function InfiniteGrid({
   const containerRef = useRef();
   const [position, updatePosition] = useState([0, 0]);
   const [contentSize, updateContentSize] = useState([0, 0]);
-  const [maxPosition, setMaxPosition] = useState([0, 0]);
+  const [pageGrid, updatePageGrid] = useState([0, 0]);
 
   useEffect(() => {
     const width = containerRef.current.offsetWidth;
     const height = containerRef.current.offsetHeight;
 
-    let contentBlockWidth = Math.ceil((width / cellSize[0]) * 2);
-    let contentBlockHeight = Math.ceil((height / cellSize[1]) * 2);
+    let pageRestPixelsWidth = (size[0] * cellSize[0]) % width;
+    let pageRestPixelsHeight = (size[1] * cellSize[1]) % height;
 
-    let restBlocksInX = size[0] % contentBlockWidth;
-    let maxPositionX = parseInt(size[0] / contentBlockWidth);
-    contentBlockWidth += restBlocksInX;
+    let contentBlockWidth = (width * 2 + pageRestPixelsWidth) / cellSize[0];
+    let contentBlockHeight = (height * 2 + pageRestPixelsHeight) / cellSize[1];
 
-    let restBlocksInY = size[1] % contentBlockHeight;
-    let maxPositionY = parseInt(size[1] / contentBlockHeight);
-    contentBlockHeight += restBlocksInY;
-
-    if (contentBlockWidth > size[0]) {
-      contentBlockWidth = size[0];
-      maxPositionX = 0;
-    }
-    if (contentBlockHeight > size[1]) {
-      contentBlockHeight = size[1];
-      maxPositionY = 0;
-    }
-
+    updatePageGrid([width, height]);
     updateContentSize([contentBlockWidth, contentBlockHeight]);
-    setMaxPosition([maxPositionX, maxPositionY]);
   }, [size, cellSize]);
 
   useEffect(() => {
     const scrollContainer = containerRef.current;
     const updateContentPanel = function () {
-      const scrollTop = scrollContainer.scrollTop;
-      const scrollLeft = scrollContainer.scrollLeft;
-      const offsetWidth = (contentSize[0] / 2) * cellSize[0];
-      const offsetHeight = (contentSize[1] / 2) * cellSize[1];
+      const { scrollTop, scrollLeft } = scrollContainer;
+
+      let needUpdate = false;
 
       const [x, y] = position;
-      let needUpdate = false;
-      let nextX = x;
-      let nextY = y;
+      const nextX = parseInt(scrollLeft / pageGrid[0]);
+      const nextY = parseInt(scrollTop / pageGrid[1]);
 
-      if (parseInt(scrollLeft / offsetWidth) !== x) {
-        if (nextX <= maxPosition[0]) {
-          nextX = parseInt(scrollLeft / offsetWidth);
-          needUpdate = true;
-        }
+      if (nextX !== x) {
+        needUpdate = true;
       }
-
-      if (parseInt(scrollTop / offsetHeight) !== y) {
-        if (nextY <= maxPosition[1]) {
-          nextY = parseInt(scrollTop / offsetHeight);
-          needUpdate = true;
-        }
+      if (nextY !== y) {
+        needUpdate = true;
       }
 
       if (needUpdate) {
@@ -83,7 +60,7 @@ export function InfiniteGrid({
     scrollContainer.addEventListener("scroll", updateContentPanel, false);
     return () =>
       scrollContainer.removeEventListener("scroll", updateContentPanel, false);
-  }, [contentSize, position, maxPosition, cellSize, onScroll]);
+  }, [contentSize, position, cellSize, onScroll, pageGrid]);
 
   const containerClassName = classnames({
     [styles.grey]: theme.isGrey,
@@ -92,7 +69,6 @@ export function InfiniteGrid({
   });
 
   useEffect(() => {
-    console.log(scrollLeft, scrollTop);
     containerRef.current.scrollLeft = scrollLeft;
     containerRef.current.scrollTop = scrollTop;
   }, [scrollLeft, scrollTop]);

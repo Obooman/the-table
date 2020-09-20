@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 export function Cell({ col, row, sheets }) {
   const rowData = sheets.rows[row] || {};
   const cell = rowData[col] || {};
-  return <div>{cell.value || ""}</div>;
+  const value = "value" in cell ? cell.value : "";
+  return <div>{value}</div>;
 }
 
 const mapStateToProps = (state) => ({

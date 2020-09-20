@@ -5,10 +5,11 @@ import Cell from "../Cell";
 import { connect } from "react-redux";
 
 export const DataTable = ({ dispatch }) => {
+  console.log("DataTable rerender");
   const [position, changePosition] = useState([0, 0]);
   return (
     <InfiniteGrid
-      size={[30, 80]}
+      size={[20, 20]}
       cellSize={[60, 20]}
       getData={(row, col) => {
         return <Cell row={row} col={col} />;
