@@ -16,36 +16,60 @@ export function InfiniteGrid({
   const containerRef = useRef();
   const [position, updatePosition] = useState([0, 0]);
   const [contentSize, updateContentSize] = useState([0, 0]);
-  const [pageGrid, updatePageGrid] = useState([0, 0]);
+  const [gridSize, updateGridSize] = useState([0, 0]);
+  const [maxPage, updateMaxPage] = useState([0, 0]);
 
   useEffect(() => {
     const width = containerRef.current.offsetWidth;
     const height = containerRef.current.offsetHeight;
 
-    let pageRestPixelsWidth = (size[0] * cellSize[0]) % width;
-    let pageRestPixelsHeight = (size[1] * cellSize[1]) % height;
+    const gridWidth = Math.ceil(width / cellSize[0]);
+    const gridHeight = Math.ceil(height / cellSize[1]);
 
-    let contentBlockWidth = (width * 2 + pageRestPixelsWidth) / cellSize[0];
-    let contentBlockHeight = (height * 2 + pageRestPixelsHeight) / cellSize[1];
+    let pageRestPixelsWidth = size[0] % gridWidth;
+    let pageRestPixelsHeight = size[1] % gridHeight;
 
-    updatePageGrid([width, height]);
+    const xAxisGrid = gridWidth * 2 > size[0] ? size[0] : gridWidth * 2;
+    const yAxisGrid = gridHeight * 2 > size[1] ? size[1] : gridHeight * 2;
+
+    let contentBlockWidth = xAxisGrid + pageRestPixelsWidth;
+    let contentBlockHeight = yAxisGrid + pageRestPixelsHeight;
+
+    let maxPageX = parseInt(size[0] / gridWidth) - 1;
+    let maxPageY = parseInt(size[1] / gridHeight) - 1;
+
+    if (maxPageX > 2) {
+      maxPageX -= 1;
+    }
+
+    if (maxPageY > 2) {
+      maxPageY -= 1;
+    }
+
+    updateGridSize([gridWidth, gridHeight]);
     updateContentSize([contentBlockWidth, contentBlockHeight]);
+    updateMaxPage([maxPageX, maxPageY]);
   }, [size, cellSize]);
 
   useEffect(() => {
     const scrollContainer = containerRef.current;
+
     const updateContentPanel = function () {
       const { scrollTop, scrollLeft } = scrollContainer;
 
       let needUpdate = false;
 
       const [x, y] = position;
-      const nextX = parseInt(scrollLeft / pageGrid[0]);
-      const nextY = parseInt(scrollTop / pageGrid[1]);
+      let nextX = parseInt(scrollLeft / (gridSize[0] * cellSize[0]));
+      let nextY = parseInt(scrollTop / (gridSize[1] * cellSize[1]));
+
+      nextX = nextX > maxPage[0] ? maxPage[0] : nextX;
+      nextY = nextY > maxPage[1] ? maxPage[1] : nextY;
 
       if (nextX !== x) {
         needUpdate = true;
       }
+
       if (nextY !== y) {
         needUpdate = true;
       }
@@ -60,7 +84,7 @@ export function InfiniteGrid({
     scrollContainer.addEventListener("scroll", updateContentPanel, false);
     return () =>
       scrollContainer.removeEventListener("scroll", updateContentPanel, false);
-  }, [contentSize, position, cellSize, onScroll, pageGrid]);
+  }, [contentSize, position, cellSize, onScroll, gridSize, maxPage]);
 
   const containerClassName = classnames({
     [styles.grey]: theme.isGrey,
@@ -88,16 +112,22 @@ export function InfiniteGrid({
           style={{
             width: contentSize[0] * cellSize[0],
             height: contentSize[1] * cellSize[1],
-            left: ((position[0] * contentSize[0]) / 2) * cellSize[0],
-            top: ((position[1] * contentSize[1]) / 2) * cellSize[1],
+            left: position[0] * gridSize[0] * cellSize[0],
+            top: position[1] * gridSize[1] * cellSize[1],
           }}
         >
           {Array.from({ length: contentSize[0] }).map((a, colIndex) => {
             return Array.from({ length: contentSize[1] }).map((a, rowIndex) => {
-              return getData(
-                (position[1] * contentSize[1]) / 2 + rowIndex,
-                (position[0] * contentSize[0]) / 2 + colIndex
-              );
+              return getData({
+                relative: {
+                  row: rowIndex,
+                  column: colIndex,
+                },
+                absolute: {
+                  row: position[1] * gridSize[1] + rowIndex,
+                  column: position[0] * gridSize[0] + colIndex,
+                },
+              });
             });
           })}
         </div>

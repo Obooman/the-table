@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import EditingCell from "./EditingCell";
 import FocusCell from "./FocusCell";
 import { connect } from "react-redux";

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { InfiniteGrid } from "../InfiniteGrid";
 import ActiveCell from "../ActiveCell";
 import Cell from "../Cell";
@@ -8,11 +8,15 @@ import { modes } from "../../models/editor";
 export const DataTable = ({ dispatch, sheets }) => {
   return (
     <InfiniteGrid
-      size={[20, 20]}
+      size={[1000, 1000]}
       cellSize={[60, 20]}
-      getData={(row, col) => {
-        if (sheets.rows?.[row]?.[col]) {
-          return <Cell row={row} col={col} />;
+      getData={(position) => {
+        const {
+          relative: { row, column },
+          absolute: { row: absRow, column: absColumn },
+        } = position;
+        if (sheets.rows?.[absRow]?.[absColumn]) {
+          return <Cell key={`${row}-${column}`} {...position} />;
         }
 
         return null;

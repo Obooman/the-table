@@ -6,19 +6,22 @@ import styles from "./main.module.css";
 
 export const Columns = ({ scrollLeft }) => (
   <InfiniteGrid
-    size={[30, 1]}
+    size={[1000, 1]}
     cellSize={[60, 20]}
-    getData={(row, col) => {
+    getData={({
+      relative: { row, column },
+      absolute: { column: absColumn },
+    }) => {
       return (
         <span
-          key={row + "-" + col}
+          key={`${row}-${column}`}
           className={styles.columnTitle}
           style={{
-            left: col * 60,
+            left: column * 60,
             top: row * 20,
           }}
         >
-          {numberToColumnString(col).toUpperCase()}
+          {numberToColumnString(absColumn).toUpperCase()}
         </span>
       );
     }}

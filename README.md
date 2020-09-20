@@ -24,4 +24,4 @@ $ yarn start # will open in :3000
 
 ## Known issues
 
-- [ ] InfiniteGrid end panel issue
+- [x] InfiniteGrid end panel issue

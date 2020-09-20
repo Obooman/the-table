@@ -2,16 +2,20 @@ import React from "react";
 import { connect } from "react-redux";
 import styles from "./main.module.css";
 
-export function Cell({ col, row, sheets }) {
-  const rowData = sheets.rows[row] || {};
-  const cell = rowData[col] || {};
+export function Cell({
+  relative: { row, column },
+  absolute: { row: absRow, column: absColumn },
+  sheets,
+}) {
+  const rowData = sheets.rows[absRow] || {};
+  const cell = rowData[absColumn] || {};
   const value = "value" in cell ? cell.value : "";
   return (
     <div
       className={styles.cell}
-      key={row + "-" + col}
+      key={`${row}-${column}`}
       style={{
-        left: col * 60,
+        left: column * 60,
         top: row * 20,
       }}
     >

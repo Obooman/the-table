@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import stringCalc from "../../../utils/stringCalc";
 import { isVariable, getVariableValue } from "../../../utils/getVariable";
 import { isFunction, getFunction } from "../../../utils/getFunctions";
@@ -18,6 +18,10 @@ export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
   const [width, setWidth] = useState(
     parseInt(getTextLength(cell.expression) / cellWidth) + 1
   );
+
+  useEffect(() => {
+    setWidth(parseInt(getTextLength(cell.expression) / cellWidth) + 1);
+  }, [cell.expression]);
 
   const onChangeHandler = (ev) => {
     const data = ev.target.value;
