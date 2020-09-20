@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import stringCalc from "../../../utils/stringCalc";
 import { isVariable, getVariableValue } from "../../../utils/getVariable";
 import { isFunction, getFunction } from "../../../utils/getFunctions";
