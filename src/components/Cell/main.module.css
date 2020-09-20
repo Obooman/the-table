@@ -1,0 +1,9 @@
+.cell {
+  font-family: sans-serif;
+  position: absolute;
+  text-align: right;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 60px;
+}

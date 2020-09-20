@@ -94,19 +94,9 @@ export function InfiniteGrid({
         >
           {Array.from({ length: contentSize[0] }).map((a, colIndex) => {
             return Array.from({ length: contentSize[1] }).map((a, rowIndex) => {
-              return (
-                <div
-                  className={styles.cell}
-                  style={{
-                    left: colIndex * 60,
-                    top: rowIndex * 20,
-                  }}
-                >
-                  {getData(
-                    (position[1] * contentSize[1]) / 2 + rowIndex,
-                    (position[0] * contentSize[0]) / 2 + colIndex
-                  )}
-                </div>
+              return getData(
+                (position[1] * contentSize[1]) / 2 + rowIndex,
+                (position[0] * contentSize[0]) / 2 + colIndex
               );
             });
           })}

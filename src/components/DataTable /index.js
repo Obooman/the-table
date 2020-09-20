@@ -1,24 +1,28 @@
 import React, { useState } from "react";
 import { InfiniteGrid } from "../InfiniteGrid";
-import { ActiveCell } from "../ActiveCell";
+import ActiveCell from "../ActiveCell";
 import Cell from "../Cell";
 import { connect } from "react-redux";
+import { modes } from "../../models/editor";
 
-export const DataTable = ({ dispatch }) => {
-  console.log("DataTable rerender");
-  const [position, changePosition] = useState([0, 0]);
+export const DataTable = ({ dispatch, sheets }) => {
   return (
     <InfiniteGrid
       size={[20, 20]}
       cellSize={[60, 20]}
       getData={(row, col) => {
-        return <Cell row={row} col={col} />;
+        if (sheets.rows?.[row]?.[col]) {
+          return <Cell row={row} col={col} />;
+        }
+
+        return null;
       }}
       onClick={(ev) => {
-        changePosition([
-          parseInt(ev.nativeEvent.offsetX / 60),
-          parseInt(ev.nativeEvent.offsetY / 20),
-        ]);
+        dispatch.editor.updateFocusCell({
+          row: parseInt(ev.nativeEvent.offsetY / 20),
+          col: parseInt(ev.nativeEvent.offsetX / 60),
+        });
+        dispatch.editor.updateMode(modes.focused);
       }}
       theme={{
         isGrey: false,
@@ -27,17 +31,13 @@ export const DataTable = ({ dispatch }) => {
         dispatch.editor.updateScrollPosition(positionData);
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: position[0] * 60,
-          top: position[1] * 20,
-        }}
-      >
-        <ActiveCell row={position[1]} col={position[0]} />
-      </div>
+      <ActiveCell />
     </InfiniteGrid>
   );
 };
 
-export default connect()(DataTable);
+const mapStateToProps = (state) => ({
+  sheets: state.sheets,
+});
+
+export default connect(mapStateToProps)(DataTable);

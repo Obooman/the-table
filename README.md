@@ -14,13 +14,13 @@ $ yarn start # will open in :3000
 
 - [x] Test cases for calculation functions
 - [x] Test cases for stringCalc
-- [ ] model update logic
+- [x] model update logic
 - [x] Editing Cell component
 - [ ] Sorter design
 - [x] model data rendering
 - [x] Infinite Grid component
-- [ ] Compose application
-- [ ] Deploy for github pages
+- [x] Compose application
+- [x] Deploy for github pages
 
 ## Known issues
 
