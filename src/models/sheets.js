@@ -1,10 +1,7 @@
-const initialState = {
-  rows: {},
-  columns: {},
-};
-
 export default {
-  state: initialState,
+  state: {
+    rows: {},
+  },
   reducers: {
     updateValue(state, payload) {
       return {
@@ -19,15 +16,17 @@ export default {
       };
     },
     changeRow(state, payload) {
-      const row = state.rows[11];
-      delete state.rows[11];
+      const row = state.rows[999];
+      delete state.rows[999];
       return {
         ...state,
         rows: {
-          ...state.rows,
-          13: row,
+          0: row,
         },
       };
+    },
+    rebuildSheets(state, payload) {
+      return payload;
     },
   },
   effects: {},

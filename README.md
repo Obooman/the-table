@@ -16,7 +16,7 @@ $ yarn start # will open in :3000
 - [x] Test cases for stringCalc
 - [x] model update logic
 - [x] Editing Cell component
-- [ ] Sorter design
+- [x] Sorter design
 - [x] model data rendering
 - [x] Infinite Grid component
 - [x] Compose application
