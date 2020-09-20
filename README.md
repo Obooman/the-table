@@ -17,7 +17,7 @@ $ yarn start # will open in :3000
 - [ ] model update logic
 - [x] Editing Cell component
 - [ ] Sorter design
-- [ ] model data rendering
+- [x] model data rendering
 - [x] Infinite Grid component
 - [ ] Compose application
 - [ ] Deploy for github pages

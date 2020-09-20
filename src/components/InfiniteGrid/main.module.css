@@ -5,7 +5,7 @@
 
 .tableContent {
   user-select: none;
-  position: relative;
+  position: absolute;
   background-image: repeating-linear-gradient(
       transparent 0px,
       transparent 19px,
@@ -19,12 +19,17 @@
       #d4d4d4 59px,
       #d4d4d4 60px
     );
+  pointer-events: none;
 }
 
 .barless::-webkit-scrollbar {
   display: none;
   width: 0px;
   background: transparent;
+}
+
+.barless {
+  scrollbar-width: none;
 }
 
 .tableContainer {
