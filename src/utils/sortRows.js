@@ -40,9 +40,9 @@ export default function sortRows(data, sorters) {
         }
       } else {
         if (isUndefined(formerValue) && !isUndefined(latterValue)) {
-          result = -1;
-        } else if (!isUndefined(formerValue) && isUndefined(latterValue)) {
           result = 1;
+        } else if (!isUndefined(formerValue) && isUndefined(latterValue)) {
+          result = -1;
         } else if (isString(formerValue) && isNumber(latterValue)) {
           result = 1;
         } else if (isNumber(formerValue) && isString(latterValue)) {

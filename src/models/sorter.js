@@ -35,8 +35,6 @@ export default {
       let currentSorter = sortType[column];
       let nextSorters;
 
-      console.log("currentSorter", currentSorter);
-
       if (!currentSorter) {
         currentSorter = {
           column,
@@ -48,8 +46,6 @@ export default {
         nextSorters = sorters
           .filter((sorter) => sorter.column !== column)
           .concat([currentSorter]);
-
-        console.log("nextSorters", nextSorters);
       } else {
         currentSorter.sortMode = null;
         nextSorters = sorters.filter((sorter) => sorter.column !== column);
