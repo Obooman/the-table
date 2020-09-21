@@ -9,8 +9,8 @@ export default ([rows, columns]) => {
       const { focusCell, mode } = store.getState().editor;
 
       if (/^Arrow\w+/.test(key)) {
-        event.preventDefault();
-        if (mode !== editorModes.normal) {
+        if (mode === editorModes.focused) {
+          event.preventDefault();
           if (key === "ArrowUp") {
             if (focusCell.row > 0) {
               store.dispatch.editor.updateFocusCell({

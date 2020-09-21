@@ -4,8 +4,9 @@ import { isVariable, getVariableValue } from "../../../utils/getVariable";
 import { isFunction, getFunction } from "../../../utils/getFunctions";
 import getTextLength from "../../../utils/getTextLength";
 import styles from "../main.module.css";
-import { connect } from "react-redux";
 import canBeNumber from "../../../utils/canBeNumber";
+import { connect } from "react-redux";
+import { modes } from "../../../models/editor";
 
 const errorInfo = "#ERROR";
 
@@ -121,6 +122,11 @@ export const EditingCell = ({
           onKeyDown={(ev) => {
             if (ev.key === "Enter") {
               onUpdateHandler(ev);
+            }
+
+            if (ev.key === "Escape") {
+              onUpdateHandler(ev);
+              dispatch.editor.updateMode(modes.focused);
             }
           }}
         />

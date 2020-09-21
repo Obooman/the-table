@@ -35,6 +35,13 @@ describe("Number operations", () => {
     expect(calc("1%1")[1]).toBe(0);
   });
 
+  it("should respect base", () => {
+    expect(calc("012+022")[1]).toBe(28);
+    expect(calc("0x12+22")[1]).toBe(40);
+    expect(calc("0x12+022")[1]).toBe(36);
+    expect(calc("012.12+022.12")[0]).toBeTruthy();
+  });
+
   it("should respect operation priority", () => {
     expect(calc("2*(4+3)")[1]).toBe(14);
     expect(calc("2/(2-1)")[1]).toBe(2);
