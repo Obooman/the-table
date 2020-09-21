@@ -6,6 +6,7 @@ export function Cell({
   relative: { row, column },
   absolute: { row: absRow, column: absColumn },
   sheets,
+  cellSize,
 }) {
   const rowData = sheets.rows[absRow] || {};
   const cell = rowData[absColumn] || {};
@@ -15,8 +16,10 @@ export function Cell({
       className={styles.cell}
       key={`${row}-${column}`}
       style={{
-        left: column * 60,
-        top: row * 20,
+        left: column * cellSize[0],
+        top: row * cellSize[1],
+        width: cellSize[0],
+        height: cellSize[1],
       }}
     >
       {value}
@@ -26,6 +29,7 @@ export function Cell({
 
 const mapStateToProps = (state) => ({
   sheets: state.sheets,
+  cellSize: [state.editor.cell.width, state.editor.cell.height],
 });
 
 export default connect(mapStateToProps)(Cell);

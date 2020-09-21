@@ -4,11 +4,13 @@ import { numberToColumnString } from "../../utils/excelColumnStrNum";
 import { connect } from "react-redux";
 import styles from "./main.module.css";
 import { sortModes } from "../../models/sorter";
+import { tableSize } from "../../theTableConfig.json";
 
-export const Columns = ({ scrollLeft, sortType, dispatch }) => (
+export const Columns = ({ scrollLeft, sortType, dispatch, cellSize }) => (
   <InfiniteGrid
-    size={[1000, 1]}
-    cellSize={[60, 20]}
+    locked
+    size={[tableSize[0], 1]}
+    cellSize={cellSize}
     getData={({
       relative: { row, column },
       absolute: { column: absColumn },
@@ -18,17 +20,21 @@ export const Columns = ({ scrollLeft, sortType, dispatch }) => (
           key={`${row}-${column}`}
           className={styles.columnTitle}
           style={{
-            left: column * 60,
-            top: row * 20,
+            left: column * cellSize[0],
+            top: row * cellSize[1],
+            width: cellSize[0],
+            height: cellSize[1],
           }}
           onClick={() => {
             dispatch.sorter.sort({ column: absColumn });
           }}
         >
-          {numberToColumnString(absColumn).toUpperCase()}
-          <span className={styles.sort}>
-            {sortType[absColumn]?.sortMode === sortModes.increase && "⬆"}
-            {sortType[absColumn]?.sortMode === sortModes.decrease && "⬇"}
+          <span>
+            {numberToColumnString(absColumn).toUpperCase()}
+            <span className={styles.sort}>
+              {sortType[absColumn]?.sortMode === sortModes.increase && "⬆"}
+              {sortType[absColumn]?.sortMode === sortModes.decrease && "⬇"}
+            </span>
           </span>
         </span>
       );
@@ -41,6 +47,7 @@ export const Columns = ({ scrollLeft, sortType, dispatch }) => (
 const mapStateToProps = (state) => ({
   scrollLeft: state.editor.scrollPosition.scrollLeft,
   sortType: state.sorter.sortType,
+  cellSize: [state.editor.cell.width, state.editor.cell.height],
 });
 
 export default connect(mapStateToProps)(Columns);

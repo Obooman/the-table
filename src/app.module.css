@@ -24,22 +24,11 @@ body {
   align-items: stretch;
 }
 
-.cornerBlock {
-  height: 20px;
-  background-color: #edebe9;
-  border-right: 1px solid #d4d4d4;
-  border-bottom: 1px solid #d4d4d4;
-  box-sizing: border-box;
-}
-
 .dataContent {
   display: flex;
   flex: 1;
   overflow: hidden;
   flex-direction: column;
-}
-
-.columnHeader {
 }
 
 .contentTable {

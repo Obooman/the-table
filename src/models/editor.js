@@ -1,3 +1,5 @@
+import { cellSize } from "../theTableConfig.json";
+
 export const modes = {
   normal: "normal",
   focused: "focused",
@@ -8,8 +10,8 @@ export default {
   state: {
     mode: modes.normal,
     cell: {
-      width: 60,
-      height: 20,
+      width: cellSize[0],
+      height: cellSize[1],
     },
     scrollPosition: {
       scrollLeft: 0,
@@ -19,6 +21,7 @@ export default {
       row: 0,
       col: 0,
     },
+    editingValue: "",
   },
   reducers: {
     updateScrollPosition(state, payload) {
@@ -37,6 +40,12 @@ export default {
       return {
         ...state,
         focusCell: payload,
+      };
+    },
+    updateEditingValue(state, payload) {
+      return {
+        ...state,
+        editingValue: payload,
       };
     },
   },

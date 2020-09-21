@@ -5,8 +5,13 @@ import { connect } from "react-redux";
 import { modes } from "../../models/editor";
 import styles from "./main.module.css";
 
-export const ActiveCell = ({ dispatch, focusCell: { row, col }, mode }) => {
-  const style = { left: col * 60, top: row * 20 };
+export const ActiveCell = ({
+  dispatch,
+  focusCell: { row, col },
+  mode,
+  cellSize,
+}) => {
+  const style = { left: col * cellSize[0], top: row * cellSize[1] };
   if (mode === modes.focused) {
     return (
       <div
@@ -45,6 +50,7 @@ const mapStateToProps = (state) => ({
   sheets: state.sheets,
   mode: state.editor.mode,
   focusCell: state.editor.focusCell,
+  cellSize: [state.editor.cell.width, state.editor.cell.height],
 });
 
 export default connect(mapStateToProps)(ActiveCell);

@@ -5,28 +5,41 @@ import { isFunction, getFunction } from "../../../utils/getFunctions";
 import getTextLength from "../../../utils/getTextLength";
 import styles from "../main.module.css";
 import { connect } from "react-redux";
+import canBeNumber from "../../../utils/canBeNumber";
 
-const cellWidth = 59;
+const errorInfo = "#ERROR";
 
-export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
+export const EditingCell = ({
+  dispatch,
+  onBlur,
+  sheets,
+  row,
+  col,
+  cellSize,
+}) => {
   const rowData = sheets.rows[row] || {};
   const cell = rowData[col] || {
     expression: "",
     value: "",
   };
 
-  const [width, setWidth] = useState(
-    parseInt(getTextLength(cell.expression) / cellWidth) + 1
-  );
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    setWidth(parseInt(getTextLength(cell.expression) / cellWidth) + 1);
-  }, [cell.expression]);
+    setWidth(
+      Math.max(
+        1,
+        width,
+        Math.ceil(getTextLength(cell.expression || cell.value) / cellSize[0])
+      )
+    );
+  }, [cell, cellSize, width]);
 
   const onChangeHandler = (ev) => {
     const data = ev.target.value;
 
-    if (getTextLength(data) > width * cellWidth) {
+    if (getTextLength(data) > width * cellSize[0]) {
+      console.log(width);
       setWidth(width + 1);
     }
   };
@@ -54,18 +67,28 @@ export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
       if (!error) {
         result = calculateResult;
       } else {
-        result = "#ERROR";
+        result = errorInfo;
       }
     } else {
       result = data;
     }
 
+    let value = result;
+
+    if (isExpression && result !== errorInfo) {
+      value = Number(value);
+    }
+
+    if (!isExpression && canBeNumber(value)) {
+      value = Number(value);
+    }
+
     dispatch.sheets.updateValue({
       row,
+      value,
+      expression,
       column: col,
       isExpression,
-      value: result,
-      expression: expression,
     });
 
     onBlur && onBlur(ev);
@@ -81,7 +104,8 @@ export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
       <div
         className={styles.focusBlock}
         style={{
-          width: width * cellWidth,
+          width: width * cellSize[0],
+          height: cellSize[1],
         }}
         onChange={onChangeHandler}
         onClick={(ev) => {
@@ -107,6 +131,7 @@ export const EditingCell = ({ dispatch, onBlur, sheets, row, col }) => {
 
 const mapStateToProps = (state) => ({
   sheets: state.sheets,
+  cellSize: [state.editor.cell.width, state.editor.cell.height],
 });
 
 export default connect(mapStateToProps)(EditingCell);

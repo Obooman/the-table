@@ -1,7 +1,5 @@
 .focusBlock {
   border: 2px solid #107c41;
-  height: 20px;
-  width: 59px;
   overflow: hidden;
   box-sizing: content-box;
   margin-left: -2px;
@@ -31,4 +29,15 @@
 
 .activeCellWrapper {
   position: absolute;
+}
+
+.cell {
+  font-family: sans-serif;
+  position: absolute;
+  text-align: right;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 60px;
+  height: 20px;
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import classnames from "classnames";
 import styles from "./main.module.css";
+import getTableGrid from "../../utils/getTableGrid";
 
 export function InfiniteGrid({
   size,
@@ -12,6 +13,7 @@ export function InfiniteGrid({
   scrollTop = 0,
   onScroll,
   children,
+  locked,
 }) {
   const containerRef = useRef();
   const [position, updatePosition] = useState([0, 0]);
@@ -54,7 +56,7 @@ export function InfiniteGrid({
   useEffect(() => {
     const scrollContainer = containerRef.current;
 
-    const updateContentPanel = function () {
+    const updateContentPanel = function (ev) {
       const { scrollTop, scrollLeft } = scrollContainer;
 
       let needUpdate = false;
@@ -93,6 +95,17 @@ export function InfiniteGrid({
   });
 
   useEffect(() => {
+    if (locked) {
+      const updateContentPanel = (ev) => ev.preventDefault();
+      containerRef.current.addEventListener(
+        "mousewheel",
+        updateContentPanel,
+        false
+      );
+    }
+  }, [locked]);
+
+  useEffect(() => {
     containerRef.current.scrollLeft = scrollLeft;
     containerRef.current.scrollTop = scrollTop;
   }, [scrollLeft, scrollTop]);
@@ -114,6 +127,7 @@ export function InfiniteGrid({
             height: contentSize[1] * cellSize[1],
             left: position[0] * gridSize[0] * cellSize[0],
             top: position[1] * gridSize[1] * cellSize[1],
+            backgroundImage: getTableGrid(...cellSize, "#d4d4d4"),
           }}
         >
           {Array.from({ length: contentSize[0] }).map((a, colIndex) => {

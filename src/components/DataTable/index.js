@@ -4,12 +4,16 @@ import ActiveCell from "../ActiveCell";
 import Cell from "../Cell";
 import { connect } from "react-redux";
 import { modes } from "../../models/editor";
+import registerKeyboardListeners from "./registerKeyboardListeners";
+import { tableSize } from "../../theTableConfig.json";
 
-export const DataTable = ({ dispatch, sheets }) => {
+registerKeyboardListeners(tableSize);
+
+export const DataTable = ({ dispatch, sheets, cellSize }) => {
   return (
     <InfiniteGrid
-      size={[1000, 1000]}
-      cellSize={[60, 20]}
+      size={tableSize}
+      cellSize={cellSize}
       getData={(position) => {
         const {
           relative: { row, column },
@@ -23,8 +27,8 @@ export const DataTable = ({ dispatch, sheets }) => {
       }}
       onClick={(ev) => {
         dispatch.editor.updateFocusCell({
-          row: parseInt(ev.nativeEvent.offsetY / 20),
-          col: parseInt(ev.nativeEvent.offsetX / 60),
+          row: parseInt(ev.nativeEvent.offsetY / cellSize[1]),
+          col: parseInt(ev.nativeEvent.offsetX / cellSize[0]),
         });
         dispatch.editor.updateMode(modes.focused);
       }}
@@ -42,6 +46,7 @@ export const DataTable = ({ dispatch, sheets }) => {
 
 const mapStateToProps = (state) => ({
   sheets: state.sheets,
+  cellSize: [state.editor.cell.width, state.editor.cell.height],
 });
 
 export default connect(mapStateToProps)(DataTable);

@@ -1,6 +1,7 @@
 .rowHeaderItem {
   position: absolute;
   text-align: center;
-  width: 60px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
