@@ -43,11 +43,59 @@ export default ([rows, columns]) => {
         }
       }
 
-      console.log(event.code);
       if (/^space$/i.test(code)) {
         if (mode !== editorModes.editing) {
           event.preventDefault();
         }
+      }
+
+      if (/backspace|delete/i.test(code)) {
+        if (mode === editorModes.focused) {
+          store.dispatch.sheets.updateValue({
+            row: focusCell.row,
+            column: focusCell.col,
+            value: "",
+            isExpression: false,
+            expression: "",
+          });
+        }
+      }
+
+      if (
+        /^Digit\d{1}|^Key[A-Z]+|Backquote|Slash|Backslash|Semicolon|BracketLeft|BracketRight|Comma|Period|Minus/.test(
+          code
+        ) &&
+        !event.metaKey
+      ) {
+        if (mode === editorModes.focused) {
+          event.preventDefault();
+          store.dispatch.sheets.updateValue({
+            row: focusCell.row,
+            column: focusCell.col,
+            value: key,
+            isExpression: false,
+            expression: "",
+          });
+          store.dispatch.editor.updateMode(editorModes.editing);
+        }
+      }
+
+      if (/^Equal/.test(code)) {
+        if (mode === editorModes.focused) {
+          event.preventDefault();
+          store.dispatch.sheets.updateValue({
+            row: focusCell.row,
+            column: focusCell.col,
+            value: "",
+            isExpression: true,
+            expression: "",
+          });
+          store.dispatch.editor.updateMode(editorModes.editing);
+        }
+      }
+
+      if (/KeyV/.test(code) && event.metaKey) {
+        store.dispatch.editor.updateMode(editorModes.editing);
       }
     },
     false
